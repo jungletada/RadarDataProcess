@@ -2,7 +2,7 @@ import pandas as pd
 from path_configs import filter_path, dates_selection, var_names
 
 
-def select_height(df, min_h=1000, max_h=8000):
+def select_height(df, min_h=700, max_h=10000):
     new_df = df[(df['Height'] >= min_h) & (df['Height'] <= max_h)]
     return new_df
 
