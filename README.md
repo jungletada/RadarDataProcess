@@ -18,8 +18,9 @@ by Dingjie PENG, Waseda University
 - `filter_csv.py`: select the appropriate  timestamps in CSV files according to `select_timestamp.py`  
 - `interpolate_height.py`: filter out the height and do linear interpolation  
 
-### 注意，以下py文件是在`data-ft`上做后处理
-- `post_process.py` 对ka-band和w-band的数据求移动平均，然后保存到`data-avg`
-- `remove_duplicate.py` 对LWC中的数据进行去重，结果保存到`data-slim`
+### Attention! Below `py` file is to do post process on `data-ft`
+
+- `post_process.py`: for ka-band and w-band, the moving average data is obtained, and results will be saved to `data-avg`
+- `remove_duplicate.py` remove the duplicate data in LWC, and results will be saved to `data-slim`
   
     
