@@ -26,8 +26,8 @@ def remove_duplicate_lwc(data, save_path):
     filtered_data.columns = [truncate_to_second(col) for col in filtered_data.columns]
     filtered_data.to_csv(save_path, index=False)
     num_columns = len(filtered_data.columns) - 1
-    print(f"{save_path}: {num_columns}")
-    return filtered_data
+    print(f"{save_path} timestamps: {num_columns}")
+    return filtered_data, num_columns
 
 
 def get_average(lwc_data, other_data, save_path):
@@ -69,18 +69,23 @@ if __name__ == '__main__':
     slim_path = 'data-slim/'
     data_mkdir(slim_path)
     data_mkdir(slim_path + 'lwc/')
-    key = 'temperature'  # ['ka_band','w_band','relativeHumidity','pressure', 'temperature']
-    data_mkdir(f'{slim_path}{key}/')
-    for date_ in dates_selection:
-        oldfile = f'{filter_path}lwc/{date_}_lwc.csv'
-        slimfile = f'{slim_path}lwc/{date_}_lwc.csv'
-        df = pd.read_csv(oldfile)
-        lwc_df = remove_duplicate_lwc(df, save_path=slimfile)
-        # lwc_df = pd.read_csv(slimfile)
-        slim_num = len(lwc_df.columns)-1
-        old_num = len(df.columns) - 1
-        print("{}:{}, {}, non duplicate {:2f}%"
-              .format(date_, slim_num, old_num, slim_num/old_num * 100.0))
-        # other_df = pd.read_csv(f'{filter_path}{key}/{date_}_{key}.csv')
-        # newfile = f'{slim_path}{key}/{date_}_{key}.csv'
-        # get_average(lwc_df, other_df, save_path=newfile)
+    from path_configs import new_dates
+    keys = ['ka_band', 'w_band', 'temperature', 'relativeHumidity', 'pressure', 'temperature']
+    for key in keys:
+        sum_time = 0
+        data_mkdir(f'{slim_path}{key}/')
+        for date_ in new_dates:
+            oldfile = f'{filter_path}lwc/{date_}_lwc.csv'
+            slimfile = f'{slim_path}lwc/{date_}_lwc.csv'
+            df = pd.read_csv(oldfile)
+            lwc_df, num_columns = remove_duplicate_lwc(df, save_path=slimfile)
+            sum_time += num_columns
+            # lwc_df = pd.read_csv(slimfile)
+            slim_num = len(lwc_df.columns) - 1
+            old_num = len(df.columns) - 1
+            print("{}:{}, {}, non duplicate {:2f}%"
+                  .format(date_, slim_num, old_num, slim_num / old_num * 100.0))
+            other_df = pd.read_csv(f'{filter_path}{key}/{date_}_{key}.csv')
+            newfile = f'{slim_path}{key}/{date_}_{key}.csv'
+            get_average(lwc_df, other_df, save_path=newfile)
+        print(f"Total timestamps: {sum_time}")
